@@ -45,15 +45,11 @@ class Boggle
   end
 
   def invalid_space?(x, y, row, column, visited)
-    out_of_bounds?(x, y) || visited?(x, y, visited) || current?(x, y, row, column)
+    out_of_bounds?(x, y) || visited[x][y] || current?(x, y, row, column)
   end
 
   def out_of_bounds?(x, y)
-    x == -1 || y == -1 || x >= @n_rows || y >= @n_columns
-  end
-
-  def visited?(x, y, visited)
-    visited[x][y]
+    x < 0 || y < 0 || x >= @n_rows || y >= @n_columns
   end
 
   def current?(x, y, row, column)
