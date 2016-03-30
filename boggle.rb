@@ -1,17 +1,16 @@
-require 'pry'
-# Extends string class. Needs to be done with dictionary.
-class String
-  def valid_word?
-    self == 'cat' || self == 'car' || self == 'cz' || self == 'ac'
-  end
-end
-
 # Implements a Boggle game that can solve itself
 class Boggle
   def initialize(board)
     @n_rows = board.length
     @n_columns = board.first.length
     @board = board
+    @words = Set.new
+    @dictionary = Set.new
+    File.open('dictionary.txt', 'r') do |f|
+      f.each_line do |line|
+        @dictionary.add(line.strip)
+      end
+    end
   end
 
   def solve
@@ -22,6 +21,7 @@ class Boggle
         find_words(@board, visited, x, y, candidate)
       end
     end
+    @words
   end
 
   private
@@ -29,7 +29,7 @@ class Boggle
   def find_words(board, visited, row, column, candidate)
     visited[row][column] = true
     candidate << board[row][column]
-    puts candidate if candidate.valid_word?
+    @words.add(candidate) if valid_word?(candidate)
     (row - 1..row + 1).each do |x|
       (column - 1..column + 1).each do |y|
         find_words(board, visited, x, y, candidate) unless invalid_space?(x, y, row, column, visited)
@@ -37,6 +37,10 @@ class Boggle
     end
     candidate.chop!
     visited[row][column] = false
+  end
+
+  def valid_word?(candidate)
+    @dictionary.include?(candidate)
   end
 
   def invalid_space?(x, y, row, column, visited)
@@ -56,6 +60,8 @@ class Boggle
   end
 end
 
-board = [%w(c a t), %w(a z z), %w(r z z)]
+board = [%w(c a t s), %w(n o t e), %w(b a s e)]
 boggle = Boggle.new(board)
-boggle.solve
+boggle.solve.each do |word|
+  puts word
+end
