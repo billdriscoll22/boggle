@@ -1,5 +1,5 @@
-# Implements a Boggle game that can solve itself
 require 'Set'
+# Implements a Boggle game that can solve itself
 class Boggle
   def initialize(board)
     @n_rows = board.length
